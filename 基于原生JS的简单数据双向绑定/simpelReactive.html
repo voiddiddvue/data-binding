@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<input bind-xx = 'aaa'></input>
+<br>
+<br>
+<br>
+<textarea bind-xx = 'aaa'></textarea>
+</body>
+<script src="./DataBinder.js"></script>
+<script type="text/javascript">
+    function User(user_id){
+        let binder = new DataBinder(user_id);
+        let user = {
+
+            attributes: {},
+
+            set:function(prop_name,val){
+                this.attributes[prop_name] = val;
+                binder.publish("change:"+user_id,prop_name,val,this);
+            },
+            get:function(prop_name){
+                return this.attributes[prop_name];
+            }
+
+        }
+
+        binder.on("change:"+user_id,(_,prop_name,val,init) => {
+            if(init != user) //避免循环调用
+                user.set(prop_name,val)
+        })
+
+        return user;
+
+    }
+    let user = new User('xx');
+    setTimeout(()=>user.set('aaa','re'),3000);
+
+</script>
+</html>
